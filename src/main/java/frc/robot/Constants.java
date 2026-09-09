@@ -47,19 +47,22 @@ public final class Constants {
 
   public static class LauncherConstants{
 
+    // For Launcher - Do we need KG? michaudc 05 Sep 26
+    // Numbers from OffseasonV2 Original Settings
     private static final Slot0Configs slot0Configs = new Slot0Configs()
-    .withKA(0)
-    .withKG(.3)
-    .withKS(.0)
-    .withKV(0)
-    .withKP(15)
+    .withKS(.1)
+    .withKV(.12)
+    .withKP(11)
     .withKI(0)
     .withKD(0);
 
+  public static final TalonFXConfiguration launcherConfig = new TalonFXConfiguration()
+    .withSlot0(slot0Configs);
 
-    public static final double NEAR_SHOOTER_VELOCITY = 60;
-    public static final double MID_SHOOTER_VELOCITY = 75;
-    public static final double FAR_SHOOTER_VELOCITY = 95;
+    // Preset Velocities - will need to adjust for V2 Robot - michaudc 05 Sep
+    public static final double NEAR_SHOOTER_VELOCITY = 35;
+    public static final double MID_SHOOTER_VELOCITY = 45;
+    public static final double FAR_SHOOTER_VELOCITY = 75;
     public static final double FIRST_MID_SHOT = 65;
     public static final double STOP_LAUNCHER = 0;
 
@@ -67,12 +70,12 @@ public final class Constants {
     public static final int rightIndexerID = 33;
     public static final int leftShooterID = 30;
     public static final int rightShooterID = 31;
+    public static final int hoodMotorID = 34;
     public static final int activeFloorFrontID = 40;
     public static final int activeFloorBackID = 41;
     public static final int launcherCurrentLimit = 60;
 
-    public static final TalonFXConfiguration launcherConfig = new TalonFXConfiguration()
-    .withSlot0(slot0Configs);
+    
   }
 
   public static class IntakeConstants{
@@ -95,6 +98,18 @@ public final class Constants {
     .withKD(0);
 
     public static TalonFXConfiguration intakeConfig = new TalonFXConfiguration().withSlot0(kSlot0Configs);
+
+    // Config Setup for Pivot Motor - michaudc 05 Sep 26
+    private static final Slot0Configs kSlot0ConfigsPivot = new Slot0Configs()
+    .withKA(0)
+    .withKG(.3)
+    .withKS(.0)
+    .withKV(0)
+    .withKP(0.35) // Values from 6340 Alpha
+    .withKI(0)
+    .withKD(0);
+
+    public static TalonFXConfiguration pivotConfig = new TalonFXConfiguration().withSlot0(kSlot0ConfigsPivot);
   }
 
   // Constants for Swerve Drive

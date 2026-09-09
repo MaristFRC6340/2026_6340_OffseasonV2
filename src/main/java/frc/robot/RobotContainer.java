@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+  
   private LauncherSubsystem launcherSubsystem = new LauncherSubsystem();
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
@@ -45,7 +46,7 @@ public class RobotContainer {
   // Driver Controller init
   final CommandXboxController driverXbox = new CommandXboxController(0);
 
-  /* DEBUG */
+  // DEBUG 
   final CommandXboxController operatorXbox = new CommandXboxController(1);
 
   // Operator Controller init
@@ -57,9 +58,9 @@ public class RobotContainer {
 
   private double rotationSpeed = 0.85;
 
-  /**
-   * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
-   */
+  //
+   // Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
+   //
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                     () -> driverXbox.getLeftY() * -1,
                     () -> driverXbox.getLeftX() * -1) 
@@ -78,16 +79,16 @@ public class RobotContainer {
                     .scaleRotation(0.4)
                     .allianceRelativeControl(true);
 
-  /**
-   * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
-   */
+  //
+  // Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
+  //
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
                                                                                              driverXbox::getRightY)
                                                            .headingWhile(true);
 
-  /**
-   * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
-   */
+  //
+  // Clone's the angular velocity input stream and converts it to a robotRelative input stream.
+  //
   SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
                                                              .allianceRelativeControl(false);
 
@@ -120,12 +121,17 @@ public class RobotContainer {
                                                   .translationHeadingOffset(true)
                                                   .translationHeadingOffset(Rotation2d.fromDegrees(0));
 
+  
   // use SmartDashboard for a list of auto options
   SendableChooser<Command> autoChooser;                                                                         
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  
 
+  // The container for the robot. Contains subsystems, OI devices, and commands. 
+  
+  public RobotContainer() {
+    
+    
     //Named Commands
     NamedCommands.registerCommand("Start Launcher Near", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
     NamedCommands.registerCommand("Start Launcher Mid", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
@@ -160,7 +166,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
+    
     
   }
 
@@ -174,6 +180,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+ 
 
     // Establish Command for different types of Driving
     //Command driveFieldOrientedDirectAngleKeyboard = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
@@ -207,6 +214,8 @@ public class RobotContainer {
     .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
     );
 
+
+
     //driverXbox.rightBumper().onTrue(launcherSubsystem.setShooterSpeedCmd(rotationSpeed));
     //driverXbox.rightBumper().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));//70 is nearish
     
@@ -221,28 +230,26 @@ public class RobotContainer {
     operatorXbox.leftTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.REVERSE_ROLLER_SPEED));
 
     operatorXbox.y().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.FAR_SHOOTER_VELOCITY));
-
+                                                       
     operatorXbox.b().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
 
     operatorXbox.a().onTrue(launcherSubsystem.stopShooterCommand());
 
     operatorXbox.x().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
     //practice controls
-    driverXbox.povUp().whileTrue(launcherSubsystem.startIndexerAndFloorCommand())
-    .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
-    );
-    driverXbox.povDown().whileTrue(launcherSubsystem.reverseIndexerAndFloorCommand())
-    .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand());
-    driverXbox.povRight().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
-    driverXbox.povLeft().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.REVERSE_ROLLER_SPEED));
 
-    driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
+
     
     driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
     driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
 
+    driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
+    driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
+    driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
+
     driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
     driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
+    
   }
 
   /**
@@ -253,6 +260,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
+    
     Command autoCommand = autoChooser.getSelected();
     PathPlannerAuto auto = (PathPlannerAuto) autoCommand;
 
@@ -260,7 +268,8 @@ public class RobotContainer {
     drivebase.setStartPose(startPose);
 
     return autoChooser.getSelected();
-  
+    
+    
 
   }
 }

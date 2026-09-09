@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -33,15 +34,19 @@ public class LauncherSubsystem extends SubsystemBase {
 
     TalonFX leftShooter;
     TalonFX rightShooter;
+    TalonFX hoodMotor; // Added by michaudc 04 Sep 26
 
-    SparkMax feederMotor;
+    SparkFlex feederMotor;
     SparkFlex feederMotorRight;
     SparkFlex activeFloorFront;
     SparkFlex activeFloorBack;
+
     private double reverse = -1;
     private double forward =1;
 
     private final VelocityVoltage shooter_request = new VelocityVoltage(0).withSlot(0);
+    PositionVoltage pos_request_Hood = new PositionVoltage(0).withSlot(0); //set motor's pos setpoint to pos specified 7
+
 
     //private final RelativeEncoder m_leftLaunchEncoder;
     //private final RelativeEncoder m_rightLaunchEncoder;
@@ -53,8 +58,11 @@ public class LauncherSubsystem extends SubsystemBase {
     rightShooter = new TalonFX(Constants.LauncherConstants.rightShooterID);
     rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
-    // Upping Amp Limit for Shooter Motors
+    // Added michaudc 04 Sep 26
+    hoodMotor = new TalonFX(Constants.LauncherConstants.hoodMotorID);
+    hoodMotor.setNeutralMode(NeutralModeValue.Brake);
 
+    // Shooter Motor Setup
     MotorOutputConfigs rightShooterConfigs = new MotorOutputConfigs();
     rightShooterConfigs.Inverted=InvertedValue.CounterClockwise_Positive;
     rightShooter.getConfigurator().apply(rightShooterConfigs);
@@ -63,21 +71,19 @@ public class LauncherSubsystem extends SubsystemBase {
     leftShooterConfigs.Inverted=InvertedValue.Clockwise_Positive;
     leftShooter.getConfigurator().apply(leftShooterConfigs);
 
+    leftShooter.setNeutralMode(NeutralModeValue.Coast); // Set to Coast Mode: michaudc
+    rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
-    feederMotor = new SparkMax(Constants.LauncherConstants.leftIndexerID, MotorType.kBrushless);
+    rightShooter.getConfigurator().apply(Constants.LauncherConstants.launcherConfig); // Set to Configs in Contants
+    leftShooter.getConfigurator().apply(Constants.LauncherConstants.launcherConfig);
+
+    // Feeder Motors
+    feederMotor = new SparkFlex(Constants.LauncherConstants.leftIndexerID, MotorType.kBrushless);
     feederMotorRight = new SparkFlex(Constants.LauncherConstants.rightIndexerID, MotorType.kBrushless);
     activeFloorFront = new SparkFlex(Constants.LauncherConstants.activeFloorFrontID, MotorType.kBrushless);// change from null to something else later
     activeFloorBack = new SparkFlex(Constants.LauncherConstants.activeFloorBackID, MotorType.kBrushless);// change from null to something else later
 
-
-    var slot0ConfigsFlywheel = new Slot0Configs();
-        slot0ConfigsFlywheel.kS = 0.1;
-        slot0ConfigsFlywheel.kV = 0.12;
-        slot0ConfigsFlywheel.kP = 0.11;
-        slot0ConfigsFlywheel.kI = 0;
-        slot0ConfigsFlywheel.kD = 0;
-      rightShooter.getConfigurator().apply(slot0ConfigsFlywheel);
-      leftShooter.getConfigurator().apply(slot0ConfigsFlywheel);
+    
 
 
     // SparkMaxConfig launcherConfig = new SparkMaxConfig();
@@ -94,6 +100,7 @@ public class LauncherSubsystem extends SubsystemBase {
         SparkMaxConfig feederConfig = new SparkMaxConfig();
         feederConfig.smartCurrentLimit(Constants.LauncherConstants.launcherCurrentLimit);
         feederConfig.idleMode(IdleMode.kBrake);
+
 
         feederMotor.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feederMotorRight.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -141,7 +148,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void setShooterVelocity(double velocity){
     //System.out.println("Shooting");
-    rightShooter.setControl(shooter_request.withVelocity(velocity).withFeedForward(0.5));
+    rightShooter.setControl(shooter_request.withVelocity(-velocity).withFeedForward(0.5));
     leftShooter.setControl(shooter_request.withVelocity(velocity).withFeedForward(0.5));
   }
 
@@ -160,10 +167,10 @@ public class LauncherSubsystem extends SubsystemBase {
 
 
     public void setIndexerAndFloorSpeed(double power) {
-    feederMotorRight.set(reverse*power);
-    feederMotor.set(power);
-    activeFloorBack.set(reverse*power);
-    activeFloorFront.set(power);
+    feederMotorRight.set(power*2);
+    feederMotor.set(reverse*(power*2));
+    activeFloorBack.set(power*-1);
+    activeFloorFront.set(power*-1);
   }
 
   //shooter below
@@ -172,16 +179,26 @@ public class LauncherSubsystem extends SubsystemBase {
       leftShooter.set(power);
   }
 
+    public void setHoodPos(double pos) {
+    // hoodMotor.setControl(pos_request_Hood.withPosition(pos));
+        hoodMotor.set(pos);
+
+  }
+
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    double rightShooterVelocityReal = rightShooter.getVelocity().getValueAsDouble()*60;
-    SmartDashboard.putNumber("Shooter Velocity Right Real", rightShooterVelocityReal);
+    // Updated by michaudc - resuse the key that already exists
+    double rightShooterVelocity = rightShooter.getVelocity().getValueAsDouble()*60;
+    double leftShooterVelocity = leftShooter.getVelocity().getValueAsDouble()*60;
 
-    double leftShooterVelocityReal = leftShooter.getVelocity().getValueAsDouble()*60;
-    SmartDashboard.putNumber("Shooter Velocity Left Real", leftShooterVelocityReal);
+    SmartDashboard.putNumber("Shoot Velocity Right", rightShooterVelocity);
+    SmartDashboard.putNumber("Shoot Velocity Left", leftShooterVelocity);
+
+    //TODO: Put the Positional Value of the Hood Motor
+
   }
 
   public Command setShooterVelocityCommand(double speed){
@@ -193,11 +210,11 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
   public Command startFloorCommand(){
-    return Commands.run(()-> setActiveFloorPower(1));
+    return Commands.run(()-> setActiveFloorPower(.2));
   }
 
   public Command startStopFloorCommand() {
-    return Commands.startEnd(() -> setActiveFloorPower(-0.75), 
+    return Commands.startEnd(() -> setActiveFloorPower(-0.2), 
     () -> setActiveFloorPower(0));
   }
 
@@ -219,11 +236,11 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
   public Command startFeederCommand(){
-    return Commands.run(()-> setFeederSpeed(0.8));
+    return Commands.run(()-> setFeederSpeed(0.2));
   }
   
     public Command reverseFeederCommand(){
-    return Commands.run(()-> setFeederSpeed(-0.8));
+    return Commands.run(()-> setFeederSpeed(-0.2));
   }
 
   public Command stopIndexerAndFloorCommand()  {
@@ -231,7 +248,7 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
     public Command startIndexerAndFloorCommand()  {
-    return Commands.run(() -> setIndexerAndFloorSpeed(1));
+    return Commands.run(() -> setIndexerAndFloorSpeed(0.8));
   }
   
     public Command reverseIndexerAndFloorCommand(){
@@ -249,5 +266,18 @@ public class LauncherSubsystem extends SubsystemBase {
     public Command startShooter(){
       return Commands.run(()->setShooterSpeedCmd(0.8));
     }
-  
+
+    
+    public Command hoodDownCommand() {
+        return Commands.runOnce(() -> this.setHoodPos(-.1));   
+    }
+
+    public Command hoodUpCommand() {
+      return Commands.runOnce(() -> this.setHoodPos(.1));
+    }  
+
+    public Command hoodStopCommand() {
+      return Commands.runOnce(() -> this.setHoodPos(0));
+    }  
+
 }
