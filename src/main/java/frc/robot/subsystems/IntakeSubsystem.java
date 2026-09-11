@@ -25,6 +25,8 @@ public class IntakeSubsystem extends SubsystemBase {
   TalonFX intakeRollerLeft;
   TalonFX intakePivot;
 
+  double pivotPos = 0;
+
   PositionVoltage pos_request = new PositionVoltage(0).withSlot(0); //set motor's pos setpoint to pos specified 7
 
   public IntakeSubsystem() {
@@ -33,6 +35,13 @@ public class IntakeSubsystem extends SubsystemBase {
     intakePivot = new TalonFX(IntakeConstants.pivotMotorID);
     // Set Config
 
+    SmartDashboard.putNumber("Pivot Position", 0);
+
+  }
+
+  public void periodic(){
+    pivotPos = intakePivot.getPosition().getValue().magnitude();
+    SmartDashboard.putNumber("Pivot Position", pivotPos);
   }
 
   public void setRollerSpeed(double speed) {
@@ -61,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Pivot Commands
  public Command intakeDownCommand() {
-    return Commands.runOnce(() -> this.setPivotPos(-8)); //got -5 from old 6340 robot we might need to change
+    return Commands.runOnce(() -> this.setPivotPos(3)); //got -5 from old 6340 robot we might need to change
  }
  public Command intakeUpCommand() {
   return Commands.runOnce(() -> this.setPivotPos(0));

@@ -243,6 +243,8 @@ public class RobotContainer {
     driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
     driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
 
+    driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
+
     driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
     driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
     driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
