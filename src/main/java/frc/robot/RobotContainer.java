@@ -245,10 +245,18 @@ public class RobotContainer {
 
     driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
-    driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
-    driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
-    driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
+    // These are the Testing Methods using velocity
+    //driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
+    //driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
+    //driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
 
+    // Hood Methods Using Motion Magic - michaudc
+    driverXbox.povUp().onTrue(launcherSubsystem.setHoodPositionCommand(60)); // Max Deploy
+    driverXbox.povRight().onTrue(launcherSubsystem.setHoodPositionCommand(35)); // Mid Deploy
+    driverXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(2)); // All the way down
+
+
+    // Pivot Speed for Test
     driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
     driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
     

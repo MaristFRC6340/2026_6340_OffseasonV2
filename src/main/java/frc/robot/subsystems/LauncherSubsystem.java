@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.revrobotics.PersistMode;
@@ -45,8 +46,15 @@ public class LauncherSubsystem extends SubsystemBase {
     private double forward =1;
 
     private final VelocityVoltage shooter_request = new VelocityVoltage(0).withSlot(0);
+    
+    // This is for testing - do not use
     PositionVoltage pos_request_Hood = new PositionVoltage(0).withSlot(0); //set motor's pos setpoint to pos specified 7
 
+    // Magic Motion Request - Feedforward setting with Motion Magic
+    MotionMagicVoltage m_hood_request = new MotionMagicVoltage(0);
+
+    private double hoodPos = 0;
+    
 
     //private final RelativeEncoder m_leftLaunchEncoder;
     //private final RelativeEncoder m_rightLaunchEncoder;
@@ -108,6 +116,26 @@ public class LauncherSubsystem extends SubsystemBase {
         activeFloorFront.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         activeFloorBack.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        // Motion Magic Settings for Hood Motor - michaudc 12 Sep 26
+        var talonFXConfigs = new TalonFXConfiguration();
+
+        // Slot 0 gains
+        var slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.kS = 0; // Static Friction
+        slot0Configs.kV = 0.12; // target velocity of 1 rps is 0.12 Volts input
+        slot0Configs.kA = 0.01; // acceleration of 1 rps/s requires 0.01 Volts
+        slot0Configs.kP = 0.1;  // Constant of Proportion - we will adjust this
+        slot0Configs.kI = 0;    // Contsant of Integration
+        slot0Configs.kD = 0;    // Constant of Derivative
+
+        // Motion Magic Settings - setting cruise velocity and max speed
+        var motionMagicConfigs = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Max 100 rpm of drive motor
+        motionMagicConfigs.MotionMagicAcceleration = 100; // Acceleration of about 5 rps
+        motionMagicConfigs.MotionMagicJerk = 500; // Target jerk of 500 rps
+
+        // Apply to Hood Motor
+        hoodMotor.getConfigurator().apply(talonFXConfigs);
 
         //launcherConfig.disableFollowerMode();
 
@@ -132,10 +160,10 @@ public class LauncherSubsystem extends SubsystemBase {
 
       SmartDashboard.putNumber("Shoot Velocity Right", rightShooterVelocity);
       SmartDashboard.putNumber("Shoot Velocity Left", leftShooterVelocity);
-      // binding camera
+      
+      SmartDashboard.putNumber("Hood Position", 0);
 
   }
-
 
 
   public void setRightShooterVelocity(double velocity){
@@ -179,11 +207,16 @@ public class LauncherSubsystem extends SubsystemBase {
       leftShooter.set(power);
   }
 
-    public void setHoodPos(double pos) {
-    // hoodMotor.setControl(pos_request_Hood.withPosition(pos));
-        hoodMotor.set(pos);
-
+  // This method is for testing only
+  public void setHoodSpeed(double velocity) {
+    hoodMotor.set(velocity);
   }
+
+    // Magic Motion Position Control - michaudc 12 Sep 26
+    public void setHoodPos(double pos) {
+      //hoodMotor.setControl(pos_request_Hood.withPosition(pos));
+      hoodMotor.setControl(m_hood_request.withPosition(pos));
+    }
 
 
 
@@ -198,6 +231,8 @@ public class LauncherSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoot Velocity Left", leftShooterVelocity);
 
     //TODO: Put the Positional Value of the Hood Motor
+    hoodPos = hoodMotor.getPosition().getValue().magnitude();
+    SmartDashboard.putNumber("Hood Position", hoodPos);
 
   }
 
@@ -267,17 +302,23 @@ public class LauncherSubsystem extends SubsystemBase {
       return Commands.run(()->setShooterSpeedCmd(0.8));
     }
 
-    
+    // Testing Commands - Do not use in Competition
     public Command hoodDownCommand() {
-        return Commands.runOnce(() -> this.setHoodPos(-.1));   
+        return Commands.runOnce(() -> this.setHoodSpeed(-.1));   
     }
 
     public Command hoodUpCommand() {
-      return Commands.runOnce(() -> this.setHoodPos(.1));
+      return Commands.runOnce(() -> this.setHoodSpeed(.1));
     }  
 
     public Command hoodStopCommand() {
-      return Commands.runOnce(() -> this.setHoodPos(0));
-    }  
+      return Commands.runOnce(() -> this.setHoodSpeed(0));
+    }
+    // End Testing Commands
+    
+    // Hood Position Command - Use in Competition
+    public Command setHoodPositionCommand(double pos) {
+      return Commands.runOnce(() -> this.setHoodPos(pos));
+    }
 
 }
