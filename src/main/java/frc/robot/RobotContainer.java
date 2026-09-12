@@ -239,7 +239,7 @@ public class RobotContainer {
     //practice controls
 
 
-    
+    // Testing Intake 
     driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
     driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
 
@@ -257,9 +257,11 @@ public class RobotContainer {
 
 
     // Pivot Speed for Test
-    driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
-    driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
+    //driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
+    //driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
     
+
+
   }
 
   /**
