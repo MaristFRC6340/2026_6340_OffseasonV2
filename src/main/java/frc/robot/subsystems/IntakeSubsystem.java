@@ -107,10 +107,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Pivot Commands
  public Command intakeDownCommand() {
-    return Commands.runOnce(() -> this.setPivotPos(7)); // Deployed Postion
+    return Commands.runOnce(() -> this.setPivotPos(12)); // Deployed Postion
  }
  public Command intakeUpCommand() { 
-  return Commands.runOnce(() -> this.setPivotPos(-1.5)); // Up Position inside Robot
+  return Commands.runOnce(() -> this.setPivotPos(0)); // Up Position inside Robot
  }
  public Command setIntakePositionCommand(double pos) {
   return Commands.runOnce(() -> this.setPivotPos(pos));
