@@ -12,6 +12,7 @@ import frc.robot.Constants.IntakeConstants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -28,8 +29,11 @@ public class IntakeSubsystem extends SubsystemBase {
   TalonFX intakeRoller;
   TalonFX intakeRollerLeft;
   TalonFX intakePivot;
+  private final Debouncer debouncer = new Debouncer(1.0);
 
+  
   double pivotPos = 0;
+  
 
   PositionVoltage pos_request = new PositionVoltage(0).withSlot(0); //set motor's pos setpoint to pos specified 7
 
@@ -78,7 +82,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic(){
     pivotPos = intakePivot.getPosition().getValue().magnitude();
     SmartDashboard.putNumber("Pivot Position", pivotPos);
+
+    boolean isStuck = debouncer.calculate(
+    Math.abs(intakePivot.getDutyCycle().getValueAsDouble()) >0.2 &&Math.abs(intakePivot.getVelocity().getValueAsDouble())<0.1);
+    
+    if(isStuck){
+      intakePivot.setPosition(12);
+     // intakePivot.set(0);
+    }
+
   }
+
 
   public void setRollerSpeed(double speed) {
     intakeRoller.set(speed);
@@ -90,6 +104,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void setPivotSpeed(double speed) {
     intakePivot.set(speed);
+  }
+
+  public Command stopPivotTryCmd(){
+      return this.runOnce(()-> setPivotSpeed(0));
   }
 
    //Commands 

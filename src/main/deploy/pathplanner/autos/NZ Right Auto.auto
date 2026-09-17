@@ -11,94 +11,19 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 6.5
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Near Back Up Path"
+                  "pathName": "Right NZ Path"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Start Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Start First Mid Launch"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Start Indexer"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Stop Launcher"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Stop Indexer"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Near Depot Path"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Depot Intake"
+                  "name": "Intake Down"
                 }
               },
               {
@@ -117,25 +42,25 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Stop Intake"
+                  "waitTime": 7.0
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Post Depot Shoot"
+                  "pathName": "Right NZ Return Path"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Start Launcher Near"
+                  "name": "Start Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop Pivot"
                 }
               }
             ]
@@ -148,13 +73,44 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Start Indexer"
+                  "name": "Hood Mid"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Launcher Mid"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Up"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Start Feeder"
                 }
               }
             ]
@@ -179,7 +135,19 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Stop Indexer"
+                  "name": "Stop Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hood Down"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop Feeder"
                 }
               }
             ]

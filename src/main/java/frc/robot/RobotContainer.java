@@ -13,6 +13,9 @@ import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LauncherConstants;
+
 import java.io.File;
 
 import com.fasterxml.jackson.databind.util.Named;
@@ -44,6 +47,8 @@ public class RobotContainer {
 
   private  Pose2d startPose;
   // Driver Controller init
+
+
   final CommandXboxController driverXbox = new CommandXboxController(0);
 
   // DEBUG 
@@ -133,19 +138,19 @@ public class RobotContainer {
     
     
     //Named Commands
-    NamedCommands.registerCommand("Start Launcher Near", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
-    NamedCommands.registerCommand("Start Launcher Mid", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
-    NamedCommands.registerCommand("Start Launcher Far", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.FAR_SHOOTER_VELOCITY));
-    NamedCommands.registerCommand("Start First Mid Launch", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.FIRST_MID_SHOT));
-    NamedCommands.registerCommand("Stop Launcher",launcherSubsystem.stopShooterCommand());
-
-
+    
+    NamedCommands.registerCommand("Launcher Near", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
+    NamedCommands.registerCommand("Stop Launcher", launcherSubsystem.stopShooterCommand());
     NamedCommands.registerCommand("Start Intake", intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
-    NamedCommands.registerCommand("Stop Intake", intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.STOP_INTAKE));
-
-    NamedCommands.registerCommand("Start Indexer", launcherSubsystem.startIndexerAndFloorCommand());
-    NamedCommands.registerCommand("Stop Indexer", launcherSubsystem.stopIndexerAndFloorCommand());
-
+    NamedCommands.registerCommand("Stop Intake", intakeSubsystem.stopRollerCommand());
+    NamedCommands.registerCommand("Stop Pivot", intakeSubsystem.stopPivotTryCmd());
+    NamedCommands.registerCommand("Start Feeder", launcherSubsystem.startIndexerAndFloorCommand());
+    NamedCommands.registerCommand("Stop Feeder", launcherSubsystem.stopIndexerAndFloorCommand());
+    NamedCommands.registerCommand("Launcher Mid", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
+    NamedCommands.registerCommand("Intake Down", intakeSubsystem.intakeDownCommand());
+    NamedCommands.registerCommand("Hood Mid", launcherSubsystem.setHoodPositionCommand(8));
+    NamedCommands.registerCommand("Intake Up", intakeSubsystem.intakeUpCommand());
+    NamedCommands.registerCommand("Hood Down", launcherSubsystem.setHoodPositionCommand(1.5));
 
     //launcherSubsystem = new LauncherSubsystem();
     // add auto options to SmartDashboard
@@ -245,17 +250,19 @@ public class RobotContainer {
 
     driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
+
     // These are the Testing Methods using velocity
     //driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
     //driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
     //driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
 
     // Hood Methods Using Motion Magic - michaudc
-    driverXbox.povUp().onTrue(launcherSubsystem.setHoodPositionCommand(60)); // Max Deploy
-    driverXbox.povRight().onTrue(launcherSubsystem.setHoodPositionCommand(35)); // Mid Deploy
-    driverXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(2)); // All the way down
+    operatorXbox.povUp().onTrue(launcherSubsystem.setHoodPositionCommand(60)); // Max Deploy
+    operatorXbox.povRight().onTrue(launcherSubsystem.setHoodPositionCommand(35)); // Mid Deploy
+    operatorXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(1.5)); // All the way down
 
-
+    operatorXbox.povLeft().onTrue(intakeSubsystem.stopPivotTryCmd());
+    driverXbox.x().onTrue(intakeSubsystem.stopPivotTryCmd());
     // Pivot Speed for Test
     //driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
     //driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
