@@ -44,6 +44,8 @@ public class LauncherSubsystem extends SubsystemBase {
 
     private double reverse = -1;
     private double forward =1;
+    public double launcherVelocitySet = 0;
+    public double targetHoodPos = 0; // target pos for hood
 
     private final VelocityVoltage shooter_request = new VelocityVoltage(0).withSlot(0);
     
@@ -108,6 +110,7 @@ public class LauncherSubsystem extends SubsystemBase {
         SparkMaxConfig feederConfig = new SparkMaxConfig();
         feederConfig.smartCurrentLimit(Constants.LauncherConstants.launcherCurrentLimit);
         feederConfig.idleMode(IdleMode.kBrake);
+        feederConfig.smartCurrentLimit(40);
 
 
         feederMotor.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -162,6 +165,8 @@ public class LauncherSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Shoot Velocity Left", leftShooterVelocity);
       
       SmartDashboard.putNumber("Hood Position", 0);
+      SmartDashboard.putNumber("Target Hood Pos", targetHoodPos);
+
 
   }
 
@@ -189,7 +194,19 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void setActiveFloorPower(double power){
     activeFloorBack.set(power);
-    activeFloorFront.set(power);  }
+    activeFloorFront.set(power);  
+  }
+
+    public void manualAdjustVelocity(double adjust){
+          launcherVelocitySet+=adjust;
+          SmartDashboard.putNumber("The Adjust Variable", launcherVelocitySet);
+    }
+
+    public void manualAdjustHood(double adjust){
+          targetHoodPos+=adjust;
+    }
+
+
 
 
 
@@ -233,12 +250,15 @@ public class LauncherSubsystem extends SubsystemBase {
     //TODO: Put the Positional Value of the Hood Motor
     hoodPos = hoodMotor.getPosition().getValue().magnitude();
     SmartDashboard.putNumber("Hood Position", hoodPos);
+    SmartDashboard.putNumber("Target Hood Pos", targetHoodPos);
 
   }
 
   public Command setShooterVelocityCommand(double speed){
     return this.run(()-> setShooterVelocity(speed));
   }
+
+
 
   public Command stopShooterCommand(){
     return this.run(()-> setShooterSpeed(0));
@@ -321,4 +341,21 @@ public class LauncherSubsystem extends SubsystemBase {
       return Commands.runOnce(() -> this.setHoodPos(pos));
     }
 
+    public Command manualSetHoodPositionCommand() {
+      return Commands.runOnce(() -> this.setHoodPos(targetHoodPos));
+    }
+
+    public Command changeTargetVelocityCmd(double adjust){
+      return Commands.runOnce(()-> manualAdjustVelocity(adjust));
+    }
+
+
+
+    public Command changeTargetHoodCmd(double adjust){
+      return Commands.runOnce(()-> manualAdjustHood(adjust));
+    }
+
+
+
+  
 }

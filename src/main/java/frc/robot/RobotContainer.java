@@ -213,6 +213,8 @@ public class RobotContainer {
     .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
     );
 
+
+
     //operatorXbox.leftBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
     operatorXbox.leftBumper().whileTrue(launcherSubsystem.reverseIndexerAndFloorCommand())
@@ -234,7 +236,9 @@ public class RobotContainer {
     
     operatorXbox.leftTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.REVERSE_ROLLER_SPEED));
 
-    operatorXbox.y().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.FAR_SHOOTER_VELOCITY));
+    //operatorXbox.y().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.FAR_SHOOTER_VELOCITY));
+
+    operatorXbox.y().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
                                                        
     operatorXbox.b().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
 
@@ -252,17 +256,29 @@ public class RobotContainer {
 
 
     // These are the Testing Methods using velocity
-    //driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
-    //driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
-    //driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
+    // driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
+    // driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
+    driverXbox.povDown().onTrue(launcherSubsystem.changeTargetHoodCmd(-1));
+    driverXbox.povDown().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
+    // driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
+    driverXbox.povRight().onTrue(launcherSubsystem.hoodDownCommand());
+    driverXbox.povUp().onTrue(launcherSubsystem.changeTargetHoodCmd(1));
+    driverXbox.povUp().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
+    
+    operatorXbox.a().onTrue(launcherSubsystem.setHoodPositionCommand(1.5));
+    operatorXbox.b().onTrue(launcherSubsystem.setHoodPositionCommand(14));
+    operatorXbox.y().onTrue(launcherSubsystem.setHoodPositionCommand(29));
 
     // Hood Methods Using Motion Magic - michaudc
-    operatorXbox.povUp().onTrue(launcherSubsystem.setHoodPositionCommand(60)); // Max Deploy
-    operatorXbox.povRight().onTrue(launcherSubsystem.setHoodPositionCommand(35)); // Mid Deploy
-    operatorXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(1.5)); // All the way down
+    // operatorXbox.povUp().onTrue(launcherSubsystem.setHoodPositionCommand(45)); // Max Deploy
+    // operatorXbox.povRight().onTrue(launcherSubsystem.setHoodPositionCommand(35)); // Mid Deploy
+    //operatorXbox.a().onTrue(launcherSubsystem.setHoodPositionCommand(1.5)); // All the way down
+    //
+    //operatorXbox.b().onTrue(launcherSubsystem.setHoodPositionCommand(10)); //Ideal Mid
 
-    operatorXbox.povLeft().onTrue(intakeSubsystem.stopPivotTryCmd());
+    //operatorXbox.povLeft().onTrue(intakeSubsystem.stopPivotTryCmd());
     driverXbox.x().onTrue(intakeSubsystem.stopPivotTryCmd());
+    // driverXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(1.5)); // All the way down
     // Pivot Speed for Test
     //driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
     //driverXbox.b().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(-Constants.IntakeConstants.PIVOT_SPEED));
