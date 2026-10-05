@@ -15,6 +15,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 //import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -31,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -67,6 +69,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveSubsystem extends SubsystemBase
 {
 
+
   /**
    * Swerve drive object.
    */
@@ -86,8 +89,19 @@ public class SwerveSubsystem extends SubsystemBase
   private final DoubleLogEntry poseX = new DoubleLogEntry(DataLogManager.getLog(), "/swerve/pose/x");
   private final DoubleLogEntry poseY = new DoubleLogEntry(DataLogManager.getLog(), "/swerve/pose/y");
   private final DoubleLogEntry poseRot = new DoubleLogEntry(DataLogManager.getLog(), "/swerve/pose/rotation");
-
+  
+  private NetworkTableEntry tx; //yw ofc :)
+  private NetworkTableEntry ta;
   private NetworkTable limTable;
+
+   private double turnError;
+  private double kP = 0.015;
+  private double turnPower;
+
+  // For heading control
+  private double desiredAngle = 0;
+  private double kPA = 0.1;
+  private double driveTurnError = 0;
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -95,6 +109,13 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
+    // Auto Aim
+    SmartDashboard.putNumber("Desired Angle", 0);
+
+    limTable = NetworkTableInstance.getDefault().getTable("limelight");
+    tx = limTable.getEntry("tx");
+    ta = limTable.getEntry("ta");
+
     boolean blueAlliance = false;
     Pose2d startingPose =  new Pose2d(new Translation2d(Meter.of(3.5),
                                            Meter.of(4)),
@@ -149,7 +170,8 @@ public class SwerveSubsystem extends SubsystemBase
       ()-> {
         var alliance = DriverStation.getAlliance();
         if(alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Blue;
+          //return alliance.get() == DriverStation.Alliance.Red;
+          return true;
         }
         return true;
       },
@@ -194,7 +216,8 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-
+    // Temporary Call for driveAim()
+    driveAim();
   }
 
 
@@ -245,6 +268,14 @@ public class SwerveSubsystem extends SubsystemBase
 
  
 
+
+  public void driveAim() {
+    turnError = tx.getDouble(0);
+    turnPower = kP * turnError;
+    //System.out.println(turnPower);
+    //desiredAngle = -1 * (swerveDrive.getOdometryHeading().getDegrees());
+    SmartDashboard.putNumber("Desired Angle", desiredAngle);
+  }
 
   /**
    * Command to characterize the robot drive motors using SysId

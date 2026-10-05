@@ -148,7 +148,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Feeder", launcherSubsystem.stopIndexerAndFloorCommand());
     NamedCommands.registerCommand("Launcher Mid", launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
     NamedCommands.registerCommand("Intake Down", intakeSubsystem.intakeDownCommand());
-    NamedCommands.registerCommand("Hood Mid", launcherSubsystem.setHoodPositionCommand(8));
+    NamedCommands.registerCommand("Hood Mid", launcherSubsystem.setHoodPositionCommand(14));
     NamedCommands.registerCommand("Intake Up", intakeSubsystem.intakeUpCommand());
     NamedCommands.registerCommand("Hood Down", launcherSubsystem.setHoodPositionCommand(1.5));
 
@@ -244,7 +244,7 @@ public class RobotContainer {
 
     operatorXbox.a().onTrue(launcherSubsystem.stopShooterCommand());
 
-    operatorXbox.x().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
+    //operatorXbox.x().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
     //practice controls
 
 
