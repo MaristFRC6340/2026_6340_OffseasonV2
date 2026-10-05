@@ -95,7 +95,7 @@ public class SwerveSubsystem extends SubsystemBase
   private NetworkTable limTable;
 
    private double turnError;
-  private double kP = 0.015;
+  private double kP = 0.1; // Old Value 0.5
   private double turnPower;
 
   // For heading control
@@ -217,7 +217,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     // Temporary Call for driveAim()
-    driveAim();
+    //driveAim()
   }
 
 
@@ -269,11 +269,14 @@ public class SwerveSubsystem extends SubsystemBase
  
 
 
-  public void driveAim() {
+  public void driveAim(DoubleSupplier translationX, DoubleSupplier translationY) {
     turnError = tx.getDouble(0);
     turnPower = kP * turnError;
     //System.out.println(turnPower);
     //desiredAngle = -1 * (swerveDrive.getOdometryHeading().getDegrees());
+    DoubleSupplier angularRotationX = () -> -turnPower;
+    Translation2d translation = new Translation2d(translationY.getAsDouble(), translationX.getAsDouble());
+    drive(translation, angularRotationX.getAsDouble(), true);
     SmartDashboard.putNumber("Desired Angle", desiredAngle);
   }
 
@@ -360,6 +363,22 @@ public class SwerveSubsystem extends SubsystemBase
                         Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
+    });
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as angular velocity.
+   * Takes input from Limelight for rotation
+   *
+   * @param translationX     Translation in the X direction. Cubed for smoother controls.
+   * @param translationY     Translation in the Y direction. Cubed for smoother controls.
+   * @return Drive command.
+   */
+  public Command driveAimCommand(DoubleSupplier translationX, DoubleSupplier translationY)
+  {
+    return run(() -> {
+      // Make the robot move with Camera controlling the rotation
+      driveAim(translationX, translationY);
     });
   }
 

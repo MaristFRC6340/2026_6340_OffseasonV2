@@ -195,6 +195,9 @@ public class RobotContainer {
     // Slow Mode Fix Temporary - Right Trigger Makes the Robot Drive Slow - michaudc
     driverXbox.leftTrigger().whileTrue(drivebase.driveFieldOriented(driveAngularSlow)); //the func one with the supplier chassis speeds
 
+    // This is Auto Aim - Look for a trigger
+    driverXbox.rightTrigger().whileTrue(drivebase.driveAimCommand(() -> driverXbox.getLeftX(), () -> driverXbox.getLeftY()));
+
     // reverse intake - VC 6/24/26
     //driverXbox.leftBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.REVERSE_ROLLER_SPEED));
 
@@ -252,7 +255,7 @@ public class RobotContainer {
     driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
     driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
 
-    driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
+    //driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
 
     // These are the Testing Methods using velocity
