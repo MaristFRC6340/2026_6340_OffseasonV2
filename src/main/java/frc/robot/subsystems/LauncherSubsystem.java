@@ -307,7 +307,7 @@ public class LauncherSubsystem extends SubsystemBase {
   }
   
     public Command reverseIndexerAndFloorCommand(){
-    return Commands.run(()-> setFeederSpeed(-0.8));
+    return Commands.run(()-> setIndexerAndFloorSpeed(-0.9));
   }
     // shooter below
     public Command setShooterSpeedCmd(double speed) {

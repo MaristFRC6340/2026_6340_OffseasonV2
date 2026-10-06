@@ -196,10 +196,10 @@ public class RobotContainer {
     driverXbox.leftTrigger().whileTrue(drivebase.driveFieldOriented(driveAngularSlow)); //the func one with the supplier chassis speeds
 
     // This is Auto Aim - Look for a trigger
-    driverXbox.rightTrigger().whileTrue(drivebase.driveAimCommand(() -> driverXbox.getLeftX(), () -> driverXbox.getLeftY()));
+    driverXbox.b().whileTrue(drivebase.driveAimCommand(() -> driverXbox.getLeftX(), () -> driverXbox.getLeftY()));
 
     // reverse intake - VC 6/24/26
-    //driverXbox.leftBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.REVERSE_ROLLER_SPEED));
+    driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
     //driverXbox.leftBumper().whileTrue(launcherSubsystem.startStopFloorCommand());
 
@@ -215,15 +215,22 @@ public class RobotContainer {
     operatorXbox.rightBumper().whileTrue(launcherSubsystem.startIndexerAndFloorCommand())
     .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
     );
+    operatorXbox.rightBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
+
 
 
 
     //operatorXbox.leftBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
-    operatorXbox.leftBumper().whileTrue(launcherSubsystem.reverseIndexerAndFloorCommand())
-    .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
+    operatorXbox.leftTrigger().whileTrue(launcherSubsystem.reverseIndexerAndFloorCommand())
+    .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand() //outtake; not good
     );
+    operatorXbox.leftTrigger().whileTrue(launcherSubsystem.reverseFeederCommand());
 
+    operatorXbox.leftBumper().whileTrue(launcherSubsystem.reverseIndexerAndFloorCommand())
+    .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand() //stir
+    );
+    operatorXbox.leftBumper().whileTrue(launcherSubsystem.reverseFeederCommand());
 
 
     //driverXbox.rightBumper().onTrue(launcherSubsystem.setShooterSpeedCmd(rotationSpeed));
