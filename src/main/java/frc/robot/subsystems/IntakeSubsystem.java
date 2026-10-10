@@ -27,7 +27,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake Subsystem. */
   TalonFX intakeRoller;
-  TalonFX intakeRollerLeft;
+  //TalonFX intakeRollerLeft;
   TalonFX intakePivot;
   private final Debouncer debouncer = new Debouncer(1.0);
 
@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     intakeRoller = new TalonFX(IntakeConstants.intakeID);
-    intakeRollerLeft = new TalonFX(IntakeConstants.intakeIDLeft);
+    //intakeRollerLeft = new TalonFX(IntakeConstants.intakeIDLeft); // Do not have on Robot
     intakePivot = new TalonFX(IntakeConstants.pivotMotorID);
     // Set Config
 
@@ -64,8 +64,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Motion Magic Settings
     var motionMagicConfigs = talonFXConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 8; // 10 rpm of Drive Motor
-    motionMagicConfigs.MotionMagicAcceleration = 50; // 50 rps acceleration
+    motionMagicConfigs.MotionMagicCruiseVelocity = 10; // 8 Original rpm of Drive Motor
+    motionMagicConfigs.MotionMagicAcceleration = 75; // 50 Original rps acceleration
     motionMagicConfigs.MotionMagicJerk = 20; // Target Jerk of 20 rps
     
     talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -96,7 +96,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setRollerSpeed(double speed) {
     intakeRoller.set(speed);
-    intakeRollerLeft.set(speed);
+    //intakeRollerLeft.set(speed);
   }
   public void setPivotPos(double pos) {
     intakePivot.setControl(m_pivot_request.withPosition(pos));

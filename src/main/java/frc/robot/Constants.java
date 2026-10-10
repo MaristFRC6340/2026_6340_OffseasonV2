@@ -80,7 +80,7 @@ public final class Constants {
 
   public static class IntakeConstants{
     public static final int intakeID = 51;
-    public static final int intakeIDLeft = 50;
+    public static final int intakeIDLeft = 50; // Do not have on Robot
     public static final int pivotMotorID = 52;
     public static final double ROLLER_SPEED = -0.9;
     public static final double REVERSE_ROLLER_SPEED = 0.9;

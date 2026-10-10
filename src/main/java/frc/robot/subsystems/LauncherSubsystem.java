@@ -133,8 +133,8 @@ public class LauncherSubsystem extends SubsystemBase {
 
         // Motion Magic Settings - setting cruise velocity and max speed
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Max 100 rpm of drive motor
-        motionMagicConfigs.MotionMagicAcceleration = 100; // Acceleration of about 5 rps
+        motionMagicConfigs.MotionMagicCruiseVelocity = 200; // Max 100 rpm of drive motor
+        motionMagicConfigs.MotionMagicAcceleration = 200; // Acceleration of about 100 rps
         motionMagicConfigs.MotionMagicJerk = 500; // Target jerk of 500 rps
 
         // Apply to Hood Motor

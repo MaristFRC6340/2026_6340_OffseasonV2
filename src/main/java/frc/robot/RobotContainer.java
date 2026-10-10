@@ -201,6 +201,21 @@ public class RobotContainer {
     // reverse intake - VC 6/24/26
     driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
+    // Testing Intake 
+    driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
+    driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
+    driverXbox.x().onTrue(intakeSubsystem.stopPivotTryCmd());
+
+    // These are the Testing Methods using velocity
+    // driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
+    // driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
+    driverXbox.povDown().onTrue(launcherSubsystem.changeTargetHoodCmd(-1));
+    driverXbox.povDown().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
+    // driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
+    driverXbox.povRight().onTrue(launcherSubsystem.hoodDownCommand());
+    driverXbox.povUp().onTrue(launcherSubsystem.changeTargetHoodCmd(1));
+    driverXbox.povUp().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
+
     //driverXbox.leftBumper().whileTrue(launcherSubsystem.startStopFloorCommand());
 
     // Zero the Gyro (Reset Field Centric)
@@ -215,10 +230,8 @@ public class RobotContainer {
     operatorXbox.rightBumper().whileTrue(launcherSubsystem.startIndexerAndFloorCommand())
     .whileFalse(launcherSubsystem.stopIndexerAndFloorCommand()
     );
+
     operatorXbox.rightBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
-
-
-
 
     //operatorXbox.leftBumper().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
 
@@ -253,29 +266,9 @@ public class RobotContainer {
     operatorXbox.b().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.MID_SHOOTER_VELOCITY));
 
     operatorXbox.a().onTrue(launcherSubsystem.stopShooterCommand());
-
-    //operatorXbox.x().onTrue(launcherSubsystem.setShooterVelocityCommand(Constants.LauncherConstants.NEAR_SHOOTER_VELOCITY));
-    //practice controls
-
-
-    // Testing Intake 
-    driverXbox.rightBumper().onTrue(intakeSubsystem.intakeUpCommand());
-    driverXbox.leftBumper().onTrue(intakeSubsystem.intakeDownCommand());
-
-    //driverXbox.rightTrigger().whileTrue(intakeSubsystem.setRollerSpeedCommand(Constants.IntakeConstants.ROLLER_SPEED));
-
-
-    // These are the Testing Methods using velocity
-    // driverXbox.povUp().onTrue(launcherSubsystem.hoodUpCommand());
-    // driverXbox.povDown().onTrue(launcherSubsystem.hoodDownCommand());
-    driverXbox.povDown().onTrue(launcherSubsystem.changeTargetHoodCmd(-1));
-    driverXbox.povDown().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
-    // driverXbox.povRight().onTrue(launcherSubsystem.hoodStopCommand());
-    driverXbox.povRight().onTrue(launcherSubsystem.hoodDownCommand());
-    driverXbox.povUp().onTrue(launcherSubsystem.changeTargetHoodCmd(1));
-    driverXbox.povUp().onTrue(launcherSubsystem.manualSetHoodPositionCommand());
+ 
     
-    operatorXbox.a().onTrue(launcherSubsystem.setHoodPositionCommand(1.5));
+    operatorXbox.a().onTrue(launcherSubsystem.setHoodPositionCommand(0));
     operatorXbox.b().onTrue(launcherSubsystem.setHoodPositionCommand(14));
     operatorXbox.y().onTrue(launcherSubsystem.setHoodPositionCommand(29));
 
@@ -287,7 +280,7 @@ public class RobotContainer {
     //operatorXbox.b().onTrue(launcherSubsystem.setHoodPositionCommand(10)); //Ideal Mid
 
     //operatorXbox.povLeft().onTrue(intakeSubsystem.stopPivotTryCmd());
-    driverXbox.x().onTrue(intakeSubsystem.stopPivotTryCmd());
+    
     // driverXbox.povDown().onTrue(launcherSubsystem.setHoodPositionCommand(1.5)); // All the way down
     // Pivot Speed for Test
     //driverXbox.y().whileTrue(intakeSubsystem.setIntakePivotSpeedCommand(Constants.IntakeConstants.PIVOT_SPEED));
